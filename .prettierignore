@@ -1,0 +1,6 @@
+.vscode
+.pnpm-lock.yaml
+
+dist
+public
+node_modules

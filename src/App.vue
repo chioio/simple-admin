@@ -1,12 +1,26 @@
 <script setup lang="ts">
-  // This starter template is using Vue 3 <script setup> SFCs
-  // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-  import HelloWorld from './components/HelloWorld.vue'
+  import { darkTheme, NConfigProvider, GlobalThemeOverrides } from 'naive-ui'
+  import colors from 'windicss/colors'
+
+  /**
+   * Use this for type hints under js file
+   * @type import('naive-ui').GlobalThemeOverrides
+   */
+  const overrides: GlobalThemeOverrides = {
+    common: {
+      textColorBase: colors.gray[50],
+      textColor1: colors.gray[100],
+      textColor2: colors.gray[200],
+      textColor3: colors.gray[300],
+    },
+  }
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <n-config-provider :theme="darkTheme" :theme-overrides="overrides">
+    <router-view />
+    <n-global-style />
+  </n-config-provider>
 </template>
 
 <style>
@@ -14,8 +28,5 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
   }
 </style>

@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div :class="['flex items-center justify-center py-4']">
+  <div :class="['flex-shrink-0 flex items-center justify-center h-14']">
     <span
       :class="[
         'relative font-bold font-cano select-none transition-all duration-300',

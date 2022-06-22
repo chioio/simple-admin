@@ -12,7 +12,7 @@ import router from './router'
 import store from './store'
 
 const i18n = createI18n({
-  locale: 'zh-CN',
+  locale: 'en',
 })
 
 const meta = document.createElement('meta')

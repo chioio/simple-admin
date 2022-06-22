@@ -13,6 +13,10 @@
       textColor2: colors.gray[200],
       textColor3: colors.gray[300],
     },
+    Menu: {
+      borderRadius: '8px',
+      itemHeight: '35px',
+    },
   }
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { h, reactive, watch } from 'vue'
+  import { h } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { NIcon, MenuOption } from 'naive-ui'
   import { Layers } from '@vicons/ionicons5'
@@ -11,36 +11,10 @@
   } from '@vicons/material'
   import { BoxEdit24Regular, TagLock16Regular } from '@vicons/fluent'
   import { Adjustments } from '@vicons/tabler'
-  import colors from 'windicss/colors'
 
   const { t } = useI18n({ inheritLocale: true })
 
-  const props = defineProps<{ collapsed: boolean }>()
-
-  const styles = reactive({
-    divider: {
-      m: props.collapsed ? '0.5rem 1rem' : '0.8rem 0.5rem 0.5rem 0.5rem',
-      h: props.collapsed ? '1px' : '1rem',
-      bg: props.collapsed ? colors.dark[200] : colors.transparent,
-    },
-    item: {
-      p: props.collapsed ? '0.5rem 1rem' : '',
-    },
-  })
-
-  watch(
-    () => props.collapsed,
-    (v) => {
-      styles.divider = {
-        m: props.collapsed ? '0.5rem 1rem' : '0.8rem 0.5rem 0.5rem 0.5rem',
-        h: v ? '1px' : '1rem',
-        bg: v ? colors.dark[200] : colors.transparent,
-      }
-      styles.item = {
-        p: props.collapsed ? '0 0.8rem' : '',
-      }
-    }
-  )
+  defineProps<{ collapsed: boolean }>()
 
   const menuOptions: MenuOption[] = [
     {
@@ -234,105 +208,116 @@
 </script>
 
 <template>
-  <n-menu
-    :collapsed="collapsed"
-    :collapsed-width="64"
-    :collapsed-icon-size="22"
-    :options="menuOptions"
-    :render-label="renderMenuLabel"
-    :class="[collapsed ? 'menu-collapsed' : 'menu', 'flex-grow']"
-    accordion
-  />
-  <n-menu
-    :collapsed="collapsed"
-    :collapsed-width="64"
-    :collapsed-icon-size="22"
-    :options="sysOptions"
-    :render-label="renderMenuLabel"
-    :class="[collapsed ? 'menu-collapsed' : 'sys-menu']"
-    accordion
-  />
+  <n-el
+    class="flex-grow flex flex-col justify-between space-y-6 overflow-y-hidden"
+  >
+    <n-menu
+      :collapsed="collapsed"
+      :collapsed-width="64"
+      :collapsed-icon-size="22"
+      :options="menuOptions"
+      :render-label="renderMenuLabel"
+      accordion
+    />
+    <n-menu
+      :collapsed="collapsed"
+      :collapsed-width="64"
+      :collapsed-icon-size="22"
+      :options="sysOptions"
+      :render-label="renderMenuLabel"
+      accordion
+    />
+  </n-el>
 </template>
 
-<style scoped lang="less">
-  :deep(.n-menu-divider) {
-    margin: v-bind('styles.divider.m') !important;
-    height: v-bind('styles.divider.h') !important;
-    background-color: v-bind('styles.divider.bg') !important;
-    @apply relative flex-shrink-0 text-xs transition-none whitespace-nowrap;
-    &::before {
-      @apply absolute inset-y-0 my-auto;
+<style lang="less">
+  .n-layout-sider {
+    .n-menu-divider {
+      @apply relative mx-1 my-2 h-4 mt-3 first-of-type:mt-0 whitespace-nowrap bg-transparent transition-none;
+      @apply before:(absolute left-0 text-xs inset-y-0);
     }
-    &:nth-of-type(1) {
-      @apply !mt-0;
-    }
-  }
-
-  :deep(.n-menu-item) {
-    padding: v-bind('styles.item.p') !important;
-
-    @apply flex-shrink-0 !my-0.5;
-    .n-menu-item-content {
-      @apply !px-2 before:inset-x-0;
-    }
-    .n-menu-item-content-header {
-      @apply block font-bold;
-    }
-    .n-menu-item-content__arrow {
-      @apply block;
-    }
-  }
-
-  .menu,
-  .sys-menu {
-    @apply select-none flex-shrink-0 flex flex-col justify-start my-4 px-4 overflow-y-hidden;
-  }
-  .menu {
-    :deep(.divider-category1)::before {
-      content: var(--menu-category1);
-    }
-    :deep(.divider-category2)::before {
-      content: var(--menu-category2);
-    }
-    :deep(.divider-category3)::before {
-      content: var(--menu-category3);
-    }
-    :deep(.n-submenu) {
-      @apply flex-shrink-0 mt-0 overflow-hidden;
-      .n-submenu-children {
-        @apply relative pl-4 max-h-68 !overflow-auto;
-      }
-    }
-
-    :deep(.n-menu-item-content .n-menu-item-content__arrow) {
-      @apply transform !rotate-0;
-    }
-    :deep(.n-menu-item-content--collapsed .n-menu-item-content__arrow) {
-      @apply transform !-rotate-90;
-    }
-  }
-
-  .sys-menu {
-    @apply flex-shrink-0;
-    :deep(.n-menu-item) {
-      @apply flex-shrink-0;
+    .n-menu-item {
+      @apply flex-shrink-0 !my-0.5;
       .n-menu-item-content {
-        @apply flex items-center justify-center !p-0 font-bold;
+        @apply !px-2 before:inset-x-0;
+      }
+      .n-menu-item-content-header,
+      .n-menu-item-content__arrow {
+        @apply block font-bold;
       }
     }
   }
-  .menu-collapsed {
-    :deep(.n-menu-item-content) {
-      @apply flex items-center justify-center !px-0 before:inset-x-0;
+  .n-layout-sider[data-collapsed='true'] {
+    .n-menu {
+      @apply !mx-0 !px-2;
     }
-    :deep(.n-menu-item-content-header) {
-      @apply hidden;
+    .n-menu-divider {
+      @apply mx-2 my-2 p-0 h-1px bg-light-900 dark:bg-dark-200;
+      @apply before:(hidden);
     }
-    :deep(.n-menu-item-content__icon) {
-      @apply !mr-0;
+    .n-menu-item {
+      @apply py-0 px-1;
+      .n-menu-item-content {
+        @apply flex items-center justify-center;
+      }
+      .n-menu-item-content-header,
+      .n-menu-item-content__arrow {
+        @apply hidden;
+      }
+      .n-menu-item-content__icon {
+        @apply !mr-0;
+      }
     }
-    :deep(.n-menu-item-content__arrow) {
-      @apply hidden;
+  }
+</style>
+
+<style scoped lang="less">
+  .n-menu {
+    &:nth-of-type(1) {
+      @apply mr-1 mt-4 pl-4 pr-3 !overflow-y-scroll;
+
+      &::-webkit-scrollbar {
+        @apply w-1.5;
+      }
+      &::-webkit-scrollbar-track {
+        @apply hidden;
+      }
+      &::-webkit-scrollbar-thumb {
+        @apply bg-green-500/20 rounded-full;
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        @apply bg-green-500/80 dark:bg-green-500;
+      }
+      :deep(.divider-category1)::before {
+        content: var(--menu-category1);
+      }
+      :deep(.divider-category2)::before {
+        content: var(--menu-category2);
+      }
+      :deep(.divider-category3)::before {
+        content: var(--menu-category3);
+      }
+      :deep(.n-submenu) {
+        @apply mt-0 overflow-hidden;
+        .n-submenu-children {
+          @apply relative pl-4;
+        }
+      }
+      :deep(.n-menu-item-content .n-menu-item-content__arrow) {
+        @apply transform !rotate-0;
+      }
+      :deep(.n-menu-item-content--collapsed .n-menu-item-content__arrow) {
+        @apply transform !-rotate-90;
+      }
+    }
+    &:nth-of-type(2) {
+      @apply flex-shrink-0 px-4 !pb-8;
+      :deep(.n-menu-item) {
+        @apply flex-shrink-0;
+        .n-menu-item-content {
+          @apply flex items-center justify-center !p-0 font-bold;
+        }
+      }
     }
   }
 </style>
@@ -344,6 +329,7 @@ en:
   contracts: Smart Contracts
   components: Components
   common: Common
+  button: Buttons
   layouts: Layouts
   materials: Material Pool
   editor: Editor
@@ -353,8 +339,9 @@ zh-CN:
   panes: 面板
   dashboard: 数据板
   contracts: 智能合约
-  common: 通用
   components: 组件库
+  common: 通用
+  button: 按钮
   layouts: 布局
   materials: 物料池
   editor: 编辑器

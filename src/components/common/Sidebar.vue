@@ -14,7 +14,7 @@
     show-trigger="bar"
     collapse-mode="width"
     :collapsed-width="64"
-    :aria-collapsed="collapsed"
+    :data-collapsed="collapsed"
     bordered
     @collapse="collapsed = true"
     @expand="collapsed = false"
@@ -54,7 +54,10 @@
       </div>
       <button
         v-if="!collapsed"
-        class="self-center flex items-center text-dark-200 hover:text-light-900"
+        :class="[
+          'self-center flex items-center',
+          'text-light-900 hover:text-dark-100 dark:(text-dark-200 hover:text-light-900)',
+        ]"
       >
         <LogOutRound class="w-full h-full text-xl" />
       </button>
@@ -66,7 +69,7 @@
 
 <style scoped lang="less">
   :deep(.n-layout-sider-scroll-container) {
-    @apply flex flex-col py-4 !overflow-hidden;
+    @apply flex flex-col space-y-2 select-none !overflow-hidden;
   }
 </style>
 

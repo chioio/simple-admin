@@ -1,29 +1,30 @@
 <script setup lang="ts">
   import { h, reactive, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { NIcon, MenuOption } from 'naive-ui'
   import { Layers } from '@vicons/ionicons5'
   import {
     DashboardRound,
     AutoAwesomeMosaicRound,
-    TableViewRound,
     SmartButtonOutlined,
     AdminPanelSettingsRound,
   } from '@vicons/material'
-  import { ChevronRight } from '@vicons/fa'
-  import { BoxEdit24Regular } from '@vicons/fluent'
+  import { BoxEdit24Regular, TagLock16Regular } from '@vicons/fluent'
   import { Adjustments } from '@vicons/tabler'
-  import { useI18n } from 'vue-i18n'
   import colors from 'windicss/colors'
-
-  const props = defineProps<{ collapsed: boolean }>()
 
   const { t } = useI18n({ inheritLocale: true })
 
+  const props = defineProps<{ collapsed: boolean }>()
+
   const styles = reactive({
     divider: {
-      m: props.collapsed ? '0.5rem 0' : '0.8rem 0.5rem 0.5rem 0.5rem',
+      m: props.collapsed ? '0.5rem 1rem' : '0.8rem 0.5rem 0.5rem 0.5rem',
       h: props.collapsed ? '1px' : '1rem',
       bg: props.collapsed ? colors.dark[200] : colors.transparent,
+    },
+    item: {
+      p: props.collapsed ? '0.5rem 1rem' : '',
     },
   })
 
@@ -31,9 +32,12 @@
     () => props.collapsed,
     (v) => {
       styles.divider = {
-        m: props.collapsed ? '0.5rem 0' : '0.8rem 0.5rem 0.5rem 0.5rem',
+        m: props.collapsed ? '0.5rem 1rem' : '0.8rem 0.5rem 0.5rem 0.5rem',
         h: v ? '1px' : '1rem',
         bg: v ? colors.dark[200] : colors.transparent,
+      }
+      styles.item = {
+        p: props.collapsed ? '0 0.8rem' : '',
       }
     }
   )
@@ -56,9 +60,9 @@
       icon: () => h(NIcon, null, () => h(DashboardRound)),
     },
     {
-      label: t('orders'),
-      key: 'orders',
-      icon: () => h(NIcon, null, () => h(TableViewRound)),
+      label: t('contracts'),
+      key: 'contract',
+      icon: () => h(NIcon, null, () => h(TagLock16Regular)),
     },
     {
       key: 'divider-category2',
@@ -227,8 +231,6 @@
     }
     return option.label as string
   }
-
-  const expandIcon = () => h(NIcon, { size: 13 }, () => h(ChevronRight))
 </script>
 
 <template>
@@ -238,7 +240,6 @@
     :collapsed-icon-size="22"
     :options="menuOptions"
     :render-label="renderMenuLabel"
-    :expand-icon="expandIcon"
     :class="[collapsed ? 'menu-collapsed' : 'menu', 'flex-grow']"
     accordion
   />
@@ -248,7 +249,6 @@
     :collapsed-icon-size="22"
     :options="sysOptions"
     :render-label="renderMenuLabel"
-    :expand-icon="expandIcon"
     :class="[collapsed ? 'menu-collapsed' : 'sys-menu']"
     accordion
   />
@@ -259,12 +259,27 @@
     margin: v-bind('styles.divider.m') !important;
     height: v-bind('styles.divider.h') !important;
     background-color: v-bind('styles.divider.bg') !important;
-    @apply relative flex-shrink-0 text-xs transition-none;
+    @apply relative flex-shrink-0 text-xs transition-none whitespace-nowrap;
     &::before {
       @apply absolute inset-y-0 my-auto;
     }
     &:nth-of-type(1) {
       @apply !mt-0;
+    }
+  }
+
+  :deep(.n-menu-item) {
+    padding: v-bind('styles.item.p') !important;
+
+    @apply flex-shrink-0 !my-0.5;
+    .n-menu-item-content {
+      @apply !px-2 before:inset-x-0;
+    }
+    .n-menu-item-content-header {
+      @apply block font-bold;
+    }
+    .n-menu-item-content__arrow {
+      @apply block;
     }
   }
 
@@ -282,18 +297,6 @@
     :deep(.divider-category3)::before {
       content: var(--menu-category3);
     }
-    :deep(.n-menu-item) {
-      @apply flex-shrink-0 !my-0.5;
-      .n-menu-item-content {
-        @apply !px-2 before:inset-x-0;
-      }
-      .n-menu-item-content-header {
-        @apply block font-bold;
-      }
-      .n-menu-item-content__arrow {
-        @apply block;
-      }
-    }
     :deep(.n-submenu) {
       @apply flex-shrink-0 mt-0 overflow-hidden;
       .n-submenu-children {
@@ -302,10 +305,10 @@
     }
 
     :deep(.n-menu-item-content .n-menu-item-content__arrow) {
-      @apply transform !rotate-90;
+      @apply transform !rotate-0;
     }
     :deep(.n-menu-item-content--collapsed .n-menu-item-content__arrow) {
-      @apply transform !rotate-0;
+      @apply transform !-rotate-90;
     }
   }
 
@@ -338,7 +341,7 @@
 en:
   panes: Panes
   dashboard: Dashboard
-  orders: Data order
+  contracts: Smart Contracts
   components: Components
   common: Common
   layouts: Layouts
@@ -348,8 +351,8 @@ en:
   sys: Preferences
 zh-CN:
   panes: 面板
-  dashboard: 仪表盘
-  orders: 数据单
+  dashboard: 数据板
+  contracts: 智能合约
   common: 通用
   components: 组件库
   layouts: 布局

@@ -1,6 +1,9 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { LogOutRound } from '@vicons/material'
+
+  const { t } = useI18n({ inheritLocale: true })
 
   const collapsed = ref(false)
 </script>
@@ -11,7 +14,7 @@
     show-trigger="bar"
     collapse-mode="width"
     :collapsed-width="64"
-    class="sider"
+    :aria-collapsed="collapsed"
     bordered
     @collapse="collapsed = true"
     @expand="collapsed = false"
@@ -19,10 +22,12 @@
     <!-- logo -->
     <Logo :collapsed="collapsed" />
     <!-- user -->
-    <div
+    <n-el
       :class="[
-        'relative flex-shrink-0 flex mx-4 my-2 py-2 items-center h-[4rem]',
-        collapsed ? 'justify-center' : 'space-x-4 px-4 bg-black rounded-xl',
+        'relative flex-shrink-0 flex mx-4 my-2 py-2 items-center h-[4rem] transition-colors duration-300',
+        collapsed
+          ? 'justify-center'
+          : 'space-x-4 px-4 rounded-xl bg-gray-100 dark:(bg-black)',
       ]"
     >
       <n-avatar
@@ -44,7 +49,7 @@
           <i
             class="absolute left-0 inset-y-0 my-auto w-2.5 h-2.5 shadow-inner rounded-full border border-green-500 bg-green-400"
           />
-          Admin
+          {{ t('admin') }}
         </span>
       </div>
       <button
@@ -53,20 +58,21 @@
       >
         <LogOutRound class="w-full h-full text-xl" />
       </button>
-    </div>
+    </n-el>
     <!-- menu -->
     <Menu :collapsed="collapsed" />
   </n-layout-sider>
 </template>
 
 <style scoped lang="less">
-  .sider {
-    :deep(.n-layout-toggle-bar) {
-      --n-toggle-bar-color: theme('colors.green.800');
-      --n-toggle-bar-color-hover: theme('colors.green.300');
-    }
-    :deep(.n-layout-sider-scroll-container) {
-      @apply flex flex-col py-4 !overflow-hidden;
-    }
+  :deep(.n-layout-sider-scroll-container) {
+    @apply flex flex-col py-4 !overflow-hidden;
   }
 </style>
+
+<i18n lang="yaml">
+en:
+  admin: Admin
+zh-CN:
+  admin: 管理员
+</i18n>

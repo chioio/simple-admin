@@ -1,5 +1,7 @@
 # Simple Admin
 
+![Wow Platform](chore/preview.jpg 'Preview')
+
 ## Tech stack
 
 - Vue 3 (Composition API)

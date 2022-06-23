@@ -9,10 +9,16 @@ import 'vfonts/FiraCode.css'
 
 import app from './app.vue'
 import router from './router'
-import store from './store'
+import store from './stores'
 
 const i18n = createI18n({
+  legacy: false,
   locale: 'en',
+  fallbackLocale: 'en',
+  message: {
+    en: {},
+    'zh-CN': {},
+  },
 })
 
 const meta = document.createElement('meta')

@@ -1,17 +1,49 @@
 <script setup lang="ts">
-  import { darkTheme, NConfigProvider, GlobalThemeOverrides } from 'naive-ui'
+  import { ref, watch, nextTick } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { NConfigProvider, GlobalThemeOverrides } from 'naive-ui'
+  import { useGlobal } from './stores'
   import colors from 'windicss/colors'
+
+  const { locale } = useI18n()
+  const global = useGlobal()
+  const render = ref(true)
+
+  watch(
+    () => locale.value,
+    (v, o) => {
+      if (v !== o) {
+        render.value = false
+        nextTick(() => (render.value = true))
+      }
+    }
+  )
 
   /**
    * Use this for type hints under js file
    * @type import('naive-ui').GlobalThemeOverrides
    */
-  const overrides: GlobalThemeOverrides = {
+  const lightThemeOverrides: GlobalThemeOverrides = {
+    Layout: {
+      siderToggleBarColor: colors.green[200],
+      siderToggleBarColorHover: colors.green[500],
+    },
+    Menu: {
+      borderRadius: '8px',
+      itemHeight: '35px',
+    },
+  }
+
+  const darkThemeOverrides: GlobalThemeOverrides = {
     common: {
       textColorBase: colors.gray[50],
       textColor1: colors.gray[100],
       textColor2: colors.gray[200],
       textColor3: colors.gray[300],
+    },
+    Layout: {
+      siderToggleBarColor: colors.green[800],
+      siderToggleBarColorHover: colors.green[500],
     },
     Menu: {
       borderRadius: '8px',
@@ -21,9 +53,15 @@
 </script>
 
 <template>
-  <n-config-provider :theme="darkTheme" :theme-overrides="overrides">
-    <router-view />
-    <n-global-style />
+  <n-config-provider
+    inline-theme-disabled
+    :theme="global.theme"
+    :theme-overrides="global.theme ? darkThemeOverrides : lightThemeOverrides"
+  >
+    <n-theme-editor>
+      <router-view v-if="render" />
+      <n-global-style />
+    </n-theme-editor>
   </n-config-provider>
 </template>
 
